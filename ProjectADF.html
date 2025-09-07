@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Tirages Hardcodés</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .resultat {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Étage 1 à 6</h2>
+        <p>Tirage basé sur : Commun (100%)</p>
+        <button onclick="lancerTirage('resultat1', 'etage1_6')">Lancer le tirage</button>
+        <div id="resultat1" class="resultat"></div>
+    </div>
+
+    <div class="container">
+        <h2>Étage 7 à 14</h2>
+        <p>Tirage basé sur : Commun (80%), Rare (20%)</p>
+        <button onclick="lancerTirage('resultat2', 'etage7_14')">Lancer le tirage</button>
+        <div id="resultat2" class="resultat"></div>
+    </div>
+
+    <div class="container">
+        <h2>Étage 15 à 24</h2>
+        <p>Tirage basé sur : Commun (40%), Rare (40%), Épique (20%)</p>
+        <button onclick="lancerTirage('resultat3', 'etage15_24')">Lancer le tirage</button>
+        <div id="resultat3" class="resultat"></div>
+    </div>
+
+    <div class="container">
+        <h2>Étage 25 à 30</h2>
+        <p>Tirage basé sur : Commun (5%), Rare (40%), Épique (35%), Légendaire (20%)</p>
+        <button onclick="lancerTirage('resultat4', 'etage25_30')">Lancer le tirage</button>
+        <div id="resultat4" class="resultat"></div>
+    </div>
+
+    <script>
+        // Définition des pourcentages pour chaque étage
+        const donneesEtages = {
+            'etage1_6': [
+                { nom: "Commun", pourcentage: 100 }
+            ],
+            'etage7_14': [
+                { nom: "Commun", pourcentage: 80 },
+                { nom: "Rare", pourcentage: 20 }
+            ],
+            'etage15_24': [
+                { nom: "Commun", pourcentage: 40 },
+                { nom: "Rare", pourcentage: 40 },
+                { nom: "Épique", pourcentage: 20 }
+            ],
+            'etage25_30': [
+                { nom: "Commun", pourcentage: 5 },
+                { nom: "Rare", pourcentage: 40 },
+                { nom: "Épique", pourcentage: 35 },
+                { nom: "Légendaire", pourcentage: 20 }
+            ]
+        };
+
+        function lancerTirage(idResultat, idEtage) {
+            const donnees = donneesEtages[idEtage];
+
+            let objets = [];
+            let totalPourcentage = 0;
+
+            // 1. Calculer les pourcentages cumulés
+            donnees.forEach(donnee => {
+                totalPourcentage += donnee.pourcentage;
+                objets.push({
+                    nom: donnee.nom,
+                    cumul: totalPourcentage
+                });
+            });
+
+            // 2. Générer un nombre aléatoire
+            const nombreAleatoire = Math.random() * totalPourcentage;
+
+            let resultat = "Aucun résultat";
+
+            // 3. Chercher l'objet correspondant
+            for (let i = 0; i < objets.length; i++) {
+                if (nombreAleatoire <= objets[i].cumul) {
+                    resultat = objets[i].nom;
+                    break;
+                }
+            }
+
+            // 4. Afficher le résultat
+            document.getElementById(idResultat).textContent = resultat;
+        }
+    </script>
+
+</body>
+</html>
